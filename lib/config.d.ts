@@ -1,11 +1,12 @@
-export interface Deployment {
-    project: string;
-    build: number;
-    action?: string;
-    region: "eu-west-1";
-}
+import { Manifest } from "./manifest";
 export interface Action {
     action: string;
     path: string;
-    compress: string;
+    compress: false | "zip" | "tar";
 }
+declare type environment = "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
+export declare const getBranchName: (env: environment) => string | undefined;
+export declare const getVcsRevision: (env: environment) => string | undefined;
+export declare const getBuildId: (env: environment) => string | undefined;
+export declare const generateManifest: (projectName: string, vcsURL: string) => Manifest;
+export {};

@@ -1,5 +1,6 @@
-import {  uploadManifest } from './manifest';
-import { generateManifest } from './config';
+import { uploadManifest } from "./manifest";
+import { generateManifest } from "./config";
+import { getAllFiles } from "./bundle";
 
 const deploy = async () => {
   const projectName = "";
@@ -7,9 +8,12 @@ const deploy = async () => {
 
   const manifest = generateManifest(projectName, vcsURL);
 
-  
   // upload each action
   // upload rr.y
   // upload build.json
-  await uploadManifest(manifest);
+  // await uploadManifest(manifest);
+  const files = getAllFiles(".");
+  console.log(files);
 };
+
+deploy().then(_ => console.log("hi"));

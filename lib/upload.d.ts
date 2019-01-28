@@ -1,5 +1,7 @@
 /// <reference types="node" />
 import { S3 } from "aws-sdk";
 import { Readable } from "stream";
-import { Deployment } from "./config";
-export declare const upload: (stream: Readable, deployment: Deployment, name: string) => () => Promise<S3.ManagedUpload.SendData>;
+import { Action } from "./config";
+import { Manifest } from "./manifest";
+export declare const uploadStream: (name: string, stream: Readable, manifest: Manifest, action?: Action | undefined) => Promise<S3.ManagedUpload.SendData>;
+export declare const uploadAction: (manifest: Manifest, action: Action) => Promise<S3.ManagedUpload.SendData> | Promise<S3.ManagedUpload.SendData[]>;

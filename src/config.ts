@@ -1,9 +1,9 @@
-import { Manifest } from './manifest';
+import { Manifest } from "./manifest";
 
 export interface Action {
   action: string;
   path: string;
-  compress: false | 'zip' | 'tar';
+  compress: false | "zip" | "tar";
 }
 
 type environment = "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
@@ -78,7 +78,7 @@ export const getBuildId = (env: environment) => {
     default:
       return undefined;
   }
-}; 
+};
 
 export const generateManifest = (
   projectName: string,

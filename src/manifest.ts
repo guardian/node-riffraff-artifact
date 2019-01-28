@@ -9,9 +9,7 @@ export interface Manifest {
 }
 const s3 = new S3();
 
-export const uploadManifest = (
-  manifest: Manifest,
-) => {
+export const uploadManifest = (manifest: Manifest) => {
   const manifestWithDate = { ...manifest, startTime: new Date().toISOString() };
   const manifestString = JSON.stringify(manifestWithDate);
   return s3.upload({
@@ -20,4 +18,3 @@ export const uploadManifest = (
     Key: `${manifest.projectName}/${manifest.buildNumber}/build.json`
   }).promise;
 };
-
