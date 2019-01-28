@@ -56,5 +56,7 @@ const uploadCompressed = (manifest: Manifest, action: Action) => {
   }
   const stream = new Duplex();
   compressToStream(action.path, action.compress, stream);
-  return uploadStream("", stream, manifest);
+  return Promise.all([
+    uploadStream(`${action.action}.${action.compress}`, stream, manifest)
+  ]);
 };

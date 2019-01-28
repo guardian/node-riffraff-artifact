@@ -27,7 +27,7 @@ const fileOrDirectory = (path: string): Promise<"file" | "directory" | false> =>
           ? `(it's a block device 💾)`
           : stats.isSocket()
           ? `(it's a socket 🔧)`
-          : `(it's unclear what you have here ❓)` 
+          : `(it's unclear what you have here ❓)`
       );
       resolve(false);
     });
