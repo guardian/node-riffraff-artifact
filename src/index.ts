@@ -7,13 +7,13 @@ const deploy = async () => {
   const vcsURL = "";
 
   const manifest = generateManifest(projectName, vcsURL);
-
+console.log(manifest)
   // upload each action
   // upload rr.y
   // upload build.json
   // await uploadManifest(manifest);
-  const files = getAllFiles(".");
-  console.log(files);
+  // const files = getAllFiles(".");
+  // console.log(files);
 };
 
 deploy().then(_ => console.log("hi"));
