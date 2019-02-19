@@ -1,20 +1,16 @@
 import { uploadManifest } from "./manifest";
-import { generateManifest } from "./config";
-import { getAllFiles } from "./bundle";
-import { Action } from "../lib/config";
+import { generateManifest, Action } from "./environment";
 import { uploadAction, uploadStream } from "./upload";
 import { createReadStream } from "fs";
+import { getConfig } from "./settings";
 
-const deploy = async () => {
-  const projectName = "";
-  const vcsURL = "";
-  const actions: Action[] = [
-    {
-      action: "build",
-      path: "folder",
-      compress: false
-    }
-  ];
+export const deploy = async () => {
+  const conf = await getConfig();
+
+  const projectName = conf.projectName;
+  const vcsURL = conf.vcsURL || "https://gu.com";
+  const actions: Action[] = conf.actions;
+
   const manifest = generateManifest(projectName, vcsURL);
   console.log(manifest);
   // upload each action
@@ -34,5 +30,3 @@ const deploy = async () => {
   await uploadManifest(manifest);
   return true;
 };
-
-deploy().then(_ => console.log("hi"));

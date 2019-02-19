@@ -1,10 +1,10 @@
 import { S3 } from "aws-sdk";
-import { Readable, Writable, Duplex } from "stream";
-import { Action } from "./config";
+import { Readable, Duplex } from "stream";
+import { Action } from "./environment";
 import { Manifest, uploadManifest } from "./manifest";
 import { compressToStream, getAllFiles } from "./bundle";
 import { createReadStream } from "fs";
-import { Format } from "archiver";
+
 const s3 = new S3({
   region: "eu-west-1"
 });
@@ -27,7 +27,8 @@ export const uploadStream = (
     .upload({
       ACL: "bucket-owner-read",
       Body: stream,
-      Bucket: "riffraff-artifact",
+      // Bucket: "riffraff-artifact",
+      Bucket: "alex-w-test-bucket",
       Key: path
     })
     .promise();
