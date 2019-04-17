@@ -1,5 +1,5 @@
 import { S3 } from "aws-sdk";
-import { Readable, Duplex } from "stream";
+import { Readable, PassThrough } from "stream";
 import { Action } from "./environment";
 import { Manifest, uploadManifest } from "./manifest";
 import { compressToStream, getAllFiles } from "./bundle";
@@ -35,7 +35,6 @@ export const uploadStream = (
 };
 
 export const uploadAction = (manifest: Manifest, action: Action) => {
-  const stream = null;
   if (action.compress) {
     return uploadCompressed(manifest, action); // we know this isn't false ;_;
   }
@@ -44,8 +43,9 @@ export const uploadAction = (manifest: Manifest, action: Action) => {
 
 const uploadMany = async (manifest: Manifest, action: Action) => {
   const files = await getAllFiles(action.path);
+  console.log(files);
   const uploads = files.map(file => {
-    const stream = createReadStream(file);
+    const stream = createReadStream(`./${file}`);
     return uploadStream(file, stream, manifest, action);
   });
   return Promise.all(uploads);
@@ -55,8 +55,11 @@ const uploadCompressed = (manifest: Manifest, action: Action) => {
   if (!action.compress) {
     throw new Error("Attempted to compress something when compress was false.");
   }
-  const stream = new Duplex();
-  compressToStream(action.path, action.compress, stream);
+  const stream = new PassThrough();
+  compressToStream(action.path, action.compress, stream).catch(_ =>
+    console.log(_)
+  );
+  // stream.on("data", _ => console.log("data", _));
   return Promise.all([
     uploadStream(`${action.action}.${action.compress}`, stream, manifest)
   ]);
