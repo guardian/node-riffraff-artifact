@@ -72,7 +72,7 @@ export const getAllFiles = async (path: string): Promise<string[]> => {
     return []; // We've hit a symlink or something else that can't be uploaded. Ignore.
   }
   if (fileOrDir === "file") {
-    return [path];
+    return [path.substring(2)]; //Remove leading './' when returning path.
   }
   const entries = await ls(path);
   const children = await Promise.all(
