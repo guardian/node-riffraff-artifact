@@ -27,8 +27,7 @@ export const uploadStream = (
     .upload({
       ACL: "bucket-owner-read",
       Body: stream,
-      // Bucket: "riffraff-artifact",
-      Bucket: "alex-w-test-bucket",
+      Bucket: "riffraff-artifact",
       Key: path
     })
     .promise();
