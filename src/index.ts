@@ -12,7 +12,7 @@ export const deploy = async () => {
   const actions: Action[] = conf.actions;
 
   const manifest = generateManifest(projectName, vcsURL);
-  console.log(manifest);
+  console.log("build.json:", manifest);
   // upload each action
   await Promise.all(
     actions.map(action => {
@@ -20,7 +20,7 @@ export const deploy = async () => {
     })
   );
 
-  // upload rr.y
+  // upload riff-raff.yaml
   await uploadStream(
     "riff-raff.yml",
     createReadStream("riff-raff.yml"),

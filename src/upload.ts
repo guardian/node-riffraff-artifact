@@ -42,7 +42,6 @@ export const uploadAction = (manifest: Manifest, action: Action) => {
 
 const uploadMany = async (manifest: Manifest, action: Action) => {
   const files = await getAllFiles(action.path);
-  console.log(files);
   const uploads = files.map(file => {
     const stream = createReadStream(`./${file}`);
     return uploadStream(file, stream, manifest, action);
@@ -58,7 +57,7 @@ const uploadCompressed = (manifest: Manifest, action: Action) => {
   compressToStream(action.path, action.compress, stream).catch(_ =>
     console.log(_)
   );
-  // stream.on("data", _ => console.log("data", _));
+
   return Promise.all([
     uploadStream(`${action.action}.${action.compress}`, stream, manifest)
   ]);
