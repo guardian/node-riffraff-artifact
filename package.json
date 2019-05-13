@@ -1,5 +1,5 @@
 {
-  "name": "node-riffraff-artifact",
+  "name": "@guardian/node-riffraff-artifact",
   "version": "0.0.1",
   "description": "Creates and upload artifacts for deployment using riffraff.",
   "main": "index.js",
