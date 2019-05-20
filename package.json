@@ -1,6 +1,6 @@
 {
   "name": "@guardian/node-riffraff-artifact",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Creates and upload artifacts for deployment using riffraff.",
   "main": "index.js",
   "license": "MIT",
@@ -23,6 +23,10 @@
     "compile": "tsc",
     "lint": "tslint --project tsconfig.json -p ."
   },
+  "files": [
+    "bin.js",
+    "lib"
+  ],
   "bin": {
     "node-riffraff-artifact": "./bin.js"
   }
