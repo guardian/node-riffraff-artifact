@@ -19,6 +19,7 @@
     "aws-sdk": "^2.394.0"
   },
   "scripts": {
+    "prepublishOnly": "tsc",
     "compile": "tsc",
     "lint": "tslint --project tsconfig.json -p ."
   },
