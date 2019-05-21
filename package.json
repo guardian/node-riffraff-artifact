@@ -21,7 +21,8 @@
   "scripts": {
     "prepublishOnly": "tsc",
     "compile": "tsc",
-    "lint": "tslint --project tsconfig.json -p ."
+    "lint": "tslint --project tsconfig.json -p .",
+    "fix": "yarn lint --fix"
   },
   "files": [
     "bin.js",
