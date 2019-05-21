@@ -22,8 +22,8 @@ export const deploy = async () => {
 
   // upload riff-raff.yaml
   await uploadStream(
-    "riff-raff.yml",
-    createReadStream("riff-raff.yml"),
+    "riff-raff.yaml",
+    createReadStream("riff-raff.yaml"),
     manifest
   );
   // upload build.json

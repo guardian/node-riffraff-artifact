@@ -10,11 +10,12 @@ const s3 = new S3({
 });
 
 export const uploadStream = (
-  name: string,
+  relativePath: string,
   stream: Readable,
   manifest: Manifest,
   action?: Action
 ) => {
+  const name = relativePath.replace(/^\.\//, ""); // Strip any errant ./'s
   const path = [
     manifest.projectName,
     manifest.buildNumber,
@@ -43,7 +44,7 @@ export const uploadAction = (manifest: Manifest, action: Action) => {
 const uploadMany = async (manifest: Manifest, action: Action) => {
   const files = await getAllFiles(action.path);
   const uploads = files.map(file => {
-    const stream = createReadStream(`./${file}`);
+    const stream = createReadStream(`${file}`);
     return uploadStream(file, stream, manifest, action);
   });
   return Promise.all(uploads);

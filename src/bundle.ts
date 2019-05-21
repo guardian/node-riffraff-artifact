@@ -24,10 +24,10 @@ const fileOrDirectory = (path: string): Promise<"file" | "directory" | false> =>
         stats.isSymbolicLink()
           ? `(it's a symlink 🔗)`
           : stats.isBlockDevice()
-          ? `(it's a block device 💾)`
-          : stats.isSocket()
-          ? `(it's a socket 🔧)`
-          : `(it's unclear what you have here ❓)`
+            ? `(it's a block device 💾)`
+            : stats.isSocket()
+              ? `(it's a socket 🔧)`
+              : `(it's unclear what you have here ❓)`
       );
       resolve(false);
     });
@@ -72,7 +72,7 @@ export const getAllFiles = async (path: string): Promise<string[]> => {
     return []; // We've hit a symlink or something else that can't be uploaded. Ignore.
   }
   if (fileOrDir === "file") {
-    return [path.substring(2)]; //Remove leading './' when returning path.
+    return [path];
   }
   const entries = await ls(path);
   const children = await Promise.all(
