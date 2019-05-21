@@ -2,7 +2,9 @@ import archiver = require("archiver");
 import { Writable } from "stream";
 import { lstat, readdir } from "fs";
 
-const fileOrDirectory = (path: string): Promise<"file" | "directory" | false> =>
+export const fileOrDirectory = (
+  path: string
+): Promise<"file" | "directory" | false> =>
   new Promise((resolve, reject) => {
     lstat(path, (err, stats) => {
       if (err) {
@@ -24,10 +26,10 @@ const fileOrDirectory = (path: string): Promise<"file" | "directory" | false> =>
         stats.isSymbolicLink()
           ? `(it's a symlink 🔗)`
           : stats.isBlockDevice()
-            ? `(it's a block device 💾)`
-            : stats.isSocket()
-              ? `(it's a socket 🔧)`
-              : `(it's unclear what you have here ❓)`
+          ? `(it's a block device 💾)`
+          : stats.isSocket()
+          ? `(it's a socket 🔧)`
+          : `(it's unclear what you have here ❓)`
       );
       resolve(false);
     });
