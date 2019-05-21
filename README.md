@@ -1,6 +1,6 @@
 # node-riffraff-artifact
 
-This module takes artifacts and uploads them to riff-raff for deployment. 
+This module takes artifacts and uploads them to riff-raff for deployment.
 
 ## How to use
 
