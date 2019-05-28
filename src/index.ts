@@ -1,15 +1,13 @@
 import { uploadManifest } from "./manifest";
-import { generateManifest, Action } from "./environment";
+import { generateManifest, Action, determineEnvironment } from "./environment";
 import { uploadAction, upload } from "./upload";
 import { createReadStream } from "fs";
 import { getConfig, Settings } from "./settings";
 
 export const deployWithConf = async (conf: Settings, riffRaffYaml?: string) => {
   const projectName = conf.projectName;
-  const vcsURL = conf.vcsURL || "https://gu.com";
   const actions: Action[] = conf.actions;
-
-  const manifest = generateManifest(projectName, vcsURL);
+  const manifest = await generateManifest(conf);
   console.log("build.json:", manifest);
   // upload each action
   await Promise.all(

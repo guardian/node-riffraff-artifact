@@ -1,29 +1,46 @@
 import { Manifest } from "./manifest";
+import simplegit = require("simple-git/promise");
+import { Settings } from "./settings";
 
 export interface Action {
   action: string;
   path: string;
   compress: false | "zip" | "tar";
 }
+const git = simplegit();
 
-type environment = "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
+type CiPlatform = "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
+interface Environment {
+  ci: CiPlatform;
+  git: boolean;
+}
 
-const determineEnvironment = (): environment => {
-  if (process.env.CIRCLECI && process.env.CI) {
-    return "circle-ci";
-  } else if (process.env.TRAVIS && process.env.CI) {
-    return "travis-ci";
-  } else if (process.env.JENKINS_URL) {
-    return "jenkins";
-  } else if (process.env.TEAMCITY_VERSION) {
-    return "teamcity";
-  } else {
-    return "dev";
-  }
+export const determineEnvironment = async (): Promise<Environment> => {
+  const isRepo = git.checkIsRepo();
+  return {
+    ci: (() => {
+      if (process.env.CIRCLECI && process.env.CI) {
+        return "circle-ci";
+      } else if (process.env.TRAVIS && process.env.CI) {
+        return "travis-ci";
+      } else if (process.env.JENKINS_URL) {
+        return "jenkins";
+      } else if (process.env.TEAMCITY_VERSION) {
+        return "teamcity";
+      } else {
+        return "dev";
+      }
+    })(),
+    git: await isRepo
+  };
 };
 
-export const getBranchName = (env: environment) => {
-  switch (env) {
+export const getBranchName = async (env: Environment) => {
+  if (env.git) {
+    const branches = await git.branchLocal();
+    return branches.current;
+  }
+  switch (env.ci) {
     case "circle-ci":
       return process.env.CIRCLE_BRANCH;
 
@@ -43,8 +60,11 @@ export const getBranchName = (env: environment) => {
   }
 };
 
-export const getVcsRevision = (env: environment) => {
-  switch (env) {
+export const getVcsRevision = async (env: Environment) => {
+  if (env.git) {
+    return git.revparse(["HEAD"]);
+  }
+  switch (env.ci) {
     case "circle-ci":
       return process.env.CIRCLE_SHA1;
 
@@ -62,8 +82,8 @@ export const getVcsRevision = (env: environment) => {
   }
 };
 
-export const getBuildId = (env: environment) => {
-  switch (env) {
+export const getBuildId = ({ ci }: Environment) => {
+  switch (ci) {
     case "circle-ci":
       return process.env.CIRCLE_BUILD_NUM;
 
@@ -80,13 +100,25 @@ export const getBuildId = (env: environment) => {
   }
 };
 
-export const generateManifest = (
-  projectName: string,
-  vcsURL: string
-): Manifest => {
-  const env = determineEnvironment();
-  const buildNumber = getBuildId(env) || "dev";
-  const branch = getBranchName(env) || "dev";
-  const revision = getVcsRevision(env) || "dev";
+const getVcsURL = async (env: Environment, maybeURL: string | undefined) => {
+  if (env.git) {
+    const remotes = await git.getRemotes(true);
+    const origin = remotes.find(remote => remote.name === "origin");
+    if (origin) {
+      return origin.refs.fetch;
+    }
+  }
+  return maybeURL || "https://gu.com";
+};
+
+export const generateManifest = async ({
+  projectName,
+  vcsURL: maybeURL
+}: Settings): Promise<Manifest> => {
+  const env = await determineEnvironment();
+  const buildNumber = (await getBuildId(env)) || "dev";
+  const branch = (await getBranchName(env)) || "dev";
+  const revision = (await getVcsRevision(env)) || "dev";
+  const vcsURL = await getVcsURL(env, maybeURL);
   return { buildNumber, branch, revision, projectName, vcsURL };
 };
