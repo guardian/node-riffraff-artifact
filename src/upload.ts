@@ -71,9 +71,7 @@ const uploadCompressed = (manifest: Manifest, action: Action) => {
     throw new Error("Attempted to compress something when compress was false.");
   }
   const stream = new PassThrough();
-  compressToStream(action.path, action.compress, stream).catch(_ =>
-    console.log(_)
-  );
+  compressToStream(action.path, action.compress, stream);
 
   return Promise.all([
     uploadStream(
