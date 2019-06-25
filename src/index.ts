@@ -5,6 +5,7 @@ import { createReadStream } from "fs";
 import { getConfig } from "./settings";
 
 export const deploy = async () => {
+
   const conf = await getConfig();
 
   const projectName = conf.projectName;
@@ -28,5 +29,6 @@ export const deploy = async () => {
   );
   // upload build.json
   await uploadManifest(manifest);
+
   return true;
 };
