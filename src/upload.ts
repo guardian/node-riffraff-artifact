@@ -36,7 +36,7 @@ export const uploadStream = async (
   return upload;
 };
 
-export const uploadAction = (manifest: Manifest, action: Action) => {
+export const uploadAction = async (manifest: Manifest, action: Action) => {
   if (action.compress) {
     return uploadCompressed(manifest, action); // we know this isn't false ;_;
   }
@@ -66,14 +66,14 @@ const uploadMany = async (manifest: Manifest, action: Action) => {
   });
   return Promise.all(uploads);
 };
-const uploadCompressed = (manifest: Manifest, action: Action) => {
+const uploadCompressed = async (manifest: Manifest, action: Action) => {
   if (!action.compress) {
     throw new Error("Attempted to compress something when compress was false.");
   }
   const stream = new PassThrough();
-  compressToStream(action.path, action.compress, stream);
 
   return Promise.all([
+    compressToStream(action.path, action.compress, stream),
     uploadStream(
       `${action.action}.${action.compress}`,
       stream,
