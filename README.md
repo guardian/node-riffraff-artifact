@@ -4,6 +4,8 @@ This module takes artifacts and uploads them to riff-raff for deployment.
 
 ## How to use
 
+Install `@guardian/node-riffraff-artifact`
+
 Create a file named `artifact.json` in the same directory as your `package.json`.
 
 ```json
