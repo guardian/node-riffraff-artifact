@@ -10,14 +10,14 @@ Create a file named `artifact.json` in the same directory as your `package.json`
 
 ```json
 {
- projectName: "(name of your project)",
- vcsURL: "(github url)",
- actions: [
-     {
-         action: "(the name of the deployment in riffraff)",
-         path: "(each individual deployment from your riff-raff.yaml file)",
-         compress: "('zip' or 'tar' or false)" 
-     }
+  "projectName": "(name of your project)",
+  "vcsURL": "(github url)",
+  "actions": [
+    {
+      "action": "(the name of the deployment in riffraff)",
+      "path": "(each individual deployment from your riff-raff.yaml file)",
+      "compress": "('zip' or 'tar' or false)"
+    }
   ]
 }
 ```
