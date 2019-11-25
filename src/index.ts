@@ -1,13 +1,10 @@
 import { uploadManifest } from "./manifest";
 import { generateManifest, Action } from "./environment";
-import { uploadAction, uploadStream } from "./upload";
+import { uploadAction, upload } from "./upload";
 import { createReadStream } from "fs";
-import { getConfig } from "./settings";
+import { getConfig, Settings } from "./settings";
 
-export const deploy = async () => {
-
-  const conf = await getConfig();
-
+export const deployWithConf = async (conf: Settings, riffRaffYaml?: string) => {
   const projectName = conf.projectName;
   const vcsURL = conf.vcsURL || "https://gu.com";
   const actions: Action[] = conf.actions;
@@ -22,13 +19,18 @@ export const deploy = async () => {
   );
 
   // upload riff-raff.yaml
-  await uploadStream(
+  await upload(
     "riff-raff.yaml",
-    createReadStream("riff-raff.yaml"),
+    riffRaffYaml ?? createReadStream("riff-raff.yaml"),
     manifest
   );
   // upload build.json
   await uploadManifest(manifest);
 
   return true;
+};
+
+export const deploy = async () => {
+  const conf = await getConfig();
+  return deployWithConf(conf);
 };

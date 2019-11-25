@@ -9,9 +9,9 @@ const s3 = new S3({
   region: "eu-west-1"
 });
 
-export const uploadStream = async (
+export const upload = async (
   relativePath: string,
-  stream: Readable,
+  stream: Readable | string,
   manifest: Manifest,
   action?: Action
 ) => {
@@ -24,7 +24,7 @@ export const uploadStream = async (
   ]
     .filter(_ => _ != null)
     .join("/");
-  const upload = await s3
+  const result = await s3
     .upload({
       ACL: "bucket-owner-read",
       Body: stream,
@@ -32,8 +32,8 @@ export const uploadStream = async (
       Key: path
     })
     .promise();
-  console.log("Uploading artifact ", path);
-  return upload;
+  console.log("Uploaded artifact ", path);
+  return result;
 };
 
 export const uploadAction = async (manifest: Manifest, action: Action) => {
@@ -53,7 +53,7 @@ const uploadFiles = async (manifest: Manifest, action: Action) => {
     const stream = createReadStream(`${action.path}`);
     const name = action.path.split("/").pop();
     if (name) {
-      return uploadStream(name, stream, manifest, action);
+      return upload(name, stream, manifest, action);
     }
   }
   throw new Error("Could not find anything to upload.");
@@ -62,7 +62,7 @@ const uploadMany = async (manifest: Manifest, action: Action) => {
   const files = await getAllFiles(action.path);
   const uploads = files.map(file => {
     const stream = createReadStream(`${file}`);
-    return uploadStream(file, stream, manifest, action);
+    return upload(file, stream, manifest, action);
   });
   return Promise.all(uploads);
 };
@@ -74,11 +74,6 @@ const uploadCompressed = async (manifest: Manifest, action: Action) => {
 
   return Promise.all([
     compressToStream(action.path, action.compress, stream),
-    uploadStream(
-      `${action.action}.${action.compress}`,
-      stream,
-      manifest,
-      action
-    )
+    upload(`${action.action}.${action.compress}`, stream, manifest, action)
   ]);
 };
