@@ -9,9 +9,8 @@ export interface Action {
 }
 const git = simplegit();
 
-type CiPlatform = "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
 interface Environment {
-  ci: CiPlatform;
+  ci: "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
   git: boolean;
 }
 

@@ -10,17 +10,16 @@ This can also be used from npx `npx @guardian/node-riffraff-artifact` without in
 
 Create a file named `artifact.json` in the same directory as your `package.json`.
 
-```ts
+```json
 {
- projectName: "(name of your project)",
- vcsURL: "(github url)",
- branchEnv: null | "(environment variable with branch name, otherwise git will be used)",
- actions: [
-     {
-         action: "(the name of the deployment in riffraff)",
-         path: "(each individual deployment from your riff-raff.yaml file)",
-         compress: "('zip' or 'tar' or false)"
-     }
+  "projectName": "(name of your project)",
+  "vcsURL": "(github url)",
+  "actions": [
+    {
+      "action": "(the name of the deployment in riffraff)",
+      "path": "(each individual deployment from your riff-raff.yaml file)",
+      "compress": "('zip' or 'tar' or false)"
+    }
   ]
 }
 ```
