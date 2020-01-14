@@ -107,7 +107,7 @@ const getVcsURL = async (env: Environment, maybeURL: string | undefined) => {
       return origin.refs.fetch;
     }
   }
-  return maybeURL || "https://gu.com";
+  return maybeURL || "https://www.github.com/guardian";
 };
 
 export const generateManifest = async ({
