@@ -36,7 +36,9 @@ export const getBranchName = (env: environment) => {
       return process.env.GIT_BRANCH;
 
     case "teamcity":
-      return (process.env.TEAMCITY_BRANCH || "").split("/").slice(-1)[0];
+      return (process.env.TEAMCITY_BRANCH || process.env.BRANCH_NAME || "")
+        .split("/")
+        .slice(-1)[0];
 
     default:
       return undefined;
