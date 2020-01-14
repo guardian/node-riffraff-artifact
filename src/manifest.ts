@@ -7,9 +7,7 @@ export interface Manifest {
   buildNumber: string;
   projectName: string;
 }
-const s3 = new S3({
-  region: "eu-west-1"
-});
+const s3 = new S3();
 
 export const uploadManifest = async (manifest: Manifest) => {
   const manifestWithDate = { ...manifest, startTime: new Date().toISOString() };
