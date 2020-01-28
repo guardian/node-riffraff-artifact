@@ -1,15 +1,12 @@
-import { S3 } from "aws-sdk";
 import { Readable, PassThrough } from "stream";
 import { Action } from "./environment";
 import { Manifest, uploadManifest } from "./manifest";
 import { compressToStream, getAllFiles, fileOrDirectory } from "./bundle";
 import { createReadStream } from "fs";
-
-const s3 = new S3({
-  region: "eu-west-1"
-});
+import { S3 } from "aws-sdk";
 
 export const upload = async (
+  s3: S3,
   relativePath: string,
   stream: Readable | string,
   manifest: Manifest,
@@ -36,37 +33,43 @@ export const upload = async (
   return result;
 };
 
-export const uploadAction = async (manifest: Manifest, action: Action) => {
+export const uploadAction = async (
+  s3: S3,
+  manifest: Manifest,
+  action: Action
+) => {
   if (action.compress) {
-    return uploadCompressed(manifest, action); // we know this isn't false ;_;
+    return uploadCompressed(s3, manifest, action); // we know this isn't false ;_;
   }
-  return uploadFiles(manifest, action);
+  return uploadFiles(s3, manifest, action);
 };
 
-const uploadFiles = async (manifest: Manifest, action: Action) => {
+const uploadFiles = async (s3: S3, manifest: Manifest, action: Action) => {
   const isFileOrDir = await fileOrDirectory(action.path);
   if (isFileOrDir === "directory") {
-    return uploadMany(manifest, action);
+    return uploadMany(s3, manifest, action);
   }
 
   if (isFileOrDir === "file") {
     const stream = createReadStream(`${action.path}`);
     const name = action.path.split("/").pop();
     if (name) {
-      return upload(name, stream, manifest, action);
+      return upload(s3, name, stream, manifest, action);
     }
   }
   throw new Error("Could not find anything to upload.");
 };
-const uploadMany = async (manifest: Manifest, action: Action) => {
+
+const uploadMany = async (s3: S3, manifest: Manifest, action: Action) => {
   const files = await getAllFiles(action.path);
   const uploads = files.map(file => {
     const stream = createReadStream(`${file}`);
-    return upload(file, stream, manifest, action);
+    return upload(s3, file, stream, manifest, action);
   });
   return Promise.all(uploads);
 };
-const uploadCompressed = async (manifest: Manifest, action: Action) => {
+
+const uploadCompressed = async (s3: S3, manifest: Manifest, action: Action) => {
   if (!action.compress) {
     throw new Error("Attempted to compress something when compress was false.");
   }
@@ -74,6 +77,6 @@ const uploadCompressed = async (manifest: Manifest, action: Action) => {
 
   return Promise.all([
     compressToStream(action.path, action.compress, stream),
-    upload(`${action.action}.${action.compress}`, stream, manifest, action)
+    upload(s3, `${action.action}.${action.compress}`, stream, manifest, action)
   ]);
 };

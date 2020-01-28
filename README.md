@@ -29,3 +29,5 @@ If your project uses [node-riffraff-artefact](https://github.com/guardian/node-r
 You can then delete all the node-riffraff-artefact specific entries from your package.json.
 
 Run `node-riffraff-artifact` as a yarn script, this will upload your `riff-raff.yaml` file to S3, generate and upload a `build.json`, and each action to the artifact bucket.
+
+This can be run with a flag `--dryRun` which will use a local s3 mock, placing the files in `./tmp`.
