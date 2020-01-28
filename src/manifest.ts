@@ -10,8 +10,8 @@ export interface Manifest {
 
 export const uploadManifest = async (s3: S3, manifest: Manifest) => {
   const manifestWithDate = { ...manifest, startTime: new Date().toISOString() };
-  console.log("Generated build.json")
-  console.log(manifestWithDate)
+  console.log("Generated build.json");
+  console.log(manifestWithDate);
   const manifestString = JSON.stringify(manifestWithDate);
   const path = `${manifest.projectName}/${manifest.buildNumber}/build.json`;
   const upload = await s3
