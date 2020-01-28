@@ -7,10 +7,11 @@ export interface Manifest {
   buildNumber: string;
   projectName: string;
 }
-const s3 = new S3();
 
-export const uploadManifest = async (manifest: Manifest) => {
+export const uploadManifest = async (s3: S3, manifest: Manifest) => {
   const manifestWithDate = { ...manifest, startTime: new Date().toISOString() };
+  console.log("Generated build.json")
+  console.log(manifestWithDate)
   const manifestString = JSON.stringify(manifestWithDate);
   const path = `${manifest.projectName}/${manifest.buildNumber}/build.json`;
   const upload = await s3
@@ -20,6 +21,6 @@ export const uploadManifest = async (manifest: Manifest) => {
       Key: path
     })
     .promise();
-  console.log("Uploaded build.json to", path);
+  console.log("Uploaded build.json to riffraff-builds ", path);
   return upload;
 };

@@ -6,20 +6,23 @@
   "license": "MIT",
   "devDependencies": {
     "@types/archiver": "^3.0.0",
-    "@types/node": "^12.0.10",
+    "@types/mock-aws-s3": "^2.6.1",
+    "@types/node": "^13.5.0",
     "@types/yaml": "^1.2.0",
-    "prettier": "^1.18.2",
-    "ts-node": "^8.5.3",
-    "tslint": "^5.18.0",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.7.2"
+    "tslint-plugin-prettier": "^2.1.0",
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "@mojotech/json-type-validation": "^3.1.0",
-    "archiver": "^3.0.0",
-    "aws-sdk": "^2.481.0",
-    "yaml": "^1.7.2"
+    "archiver": "^3.1.1",
+    "aws-sdk": "^2.610.0",
+    "mock-aws-s3": "^3.0.0",
+    "yaml": "^1.7.2",
+    "yargs": "^15.1.0"
   },
   "scripts": {
     "prepublishOnly": "tsc",
