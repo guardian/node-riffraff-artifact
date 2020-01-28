@@ -8,7 +8,10 @@ export interface Manifest {
   projectName: string;
 }
 
-export const uploadManifest = async (s3: S3, manifest: Manifest) => {
+export const uploadManifest = async (
+  s3: S3,
+  manifest: Manifest
+): Promise<unknown> => {
   const manifestWithDate = { ...manifest, startTime: new Date().toISOString() };
   console.log("Generated build.json");
   console.log(manifestWithDate);

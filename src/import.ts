@@ -1,8 +1,6 @@
 import { readFile } from "fs";
 import YAML from "yaml";
-import { promisify } from "util";
-import { exec as execCB } from "child_process";
-const exec = promisify(execCB);
+import { Settings } from "./settings";
 
 const pjson = process.argv[3] || "package.json";
 const ryaml = process.argv[4] || "riff-raff.yaml";
@@ -37,7 +35,7 @@ const readRiffRaff: () => Promise<{
     });
   });
 
-export const importer = async () => {
+export const importer = async (): Promise<Partial<Settings>> => {
   const pkg = await readPackage();
   const riffraff = await readRiffRaff();
   const repository = pkg.repository || "your github url";
@@ -48,7 +46,7 @@ export const importer = async () => {
   const actions = deployments.map(deployment => ({
     action: deployment,
     path: cloudformation || buildDir || "",
-    compress: cloudformation ? false : "zip"
+    compress: cloudformation ? (false as const) : ("zip" as const)
   }));
   return {
     projectName,

@@ -39,7 +39,7 @@ export const compressToStream = async (
   path: string,
   method: archiver.Format,
   stream: Writable
-) => {
+): Promise<void> => {
   const archive = archiver(method);
   archive.on("warning", err => {
     console.error("Error in attempting to compress", path, err);

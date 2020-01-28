@@ -22,7 +22,7 @@ const determineEnvironment = (): environment => {
   }
 };
 
-export const getBranchName = (env: environment) => {
+export const getBranchName = (env: environment): string | undefined => {
   switch (env) {
     case "circle-ci":
       return process.env.CIRCLE_BRANCH;
@@ -45,7 +45,7 @@ export const getBranchName = (env: environment) => {
   }
 };
 
-export const getVcsRevision = (env: environment) => {
+export const getVcsRevision = (env: environment): string | undefined => {
   switch (env) {
     case "circle-ci":
       return process.env.CIRCLE_SHA1;
@@ -64,7 +64,7 @@ export const getVcsRevision = (env: environment) => {
   }
 };
 
-export const getBuildId = (env: environment) => {
+export const getBuildId = (env: environment): string | undefined => {
   switch (env) {
     case "circle-ci":
       return process.env.CIRCLE_BUILD_NUM;
