@@ -18,12 +18,6 @@ export interface Settings {
 
 const settingsPath = "./artifact.json";
 
-export const getConfig = async () => {
-  const file = await read();
-  const json = JSON.parse(file);
-  return decoder.runPromise(json);
-};
-
 const read: () => Promise<string> = () =>
   new Promise((resolve, reject) => {
     readFile(settingsPath, (err, data) => {
@@ -50,3 +44,9 @@ const decoder: Decoder<Settings> = object({
     })
   )
 });
+
+export const getConfig = async (): Promise<Settings> => {
+  const file = await read();
+  const json = JSON.parse(file);
+  return decoder.runPromise(json);
+};

@@ -7,7 +7,7 @@ import { join } from "path";
 import AWSMock from "mock-aws-s3";
 import { S3 } from "aws-sdk";
 
-export const deployWithConf = async (conf: Settings, s3: S3) => {
+export const deployWithConf = async (conf: Settings, s3: S3): Promise<void> => {
   const projectName = conf.projectName;
   const vcsURL = conf.vcsURL || "https://gu.com";
   const actions: Action[] = conf.actions;
@@ -31,20 +31,16 @@ export const deployWithConf = async (conf: Settings, s3: S3) => {
   // upload build.json
   await uploadManifest(s3, manifest);
 
-  return true;
+  return;
 };
 
-export const mockS3 = () => {
+export const mockS3 = (): S3 => {
   AWSMock.config.basePath = join(process.cwd(), "tmp");
   return new AWSMock.S3();
 };
 
-export const deploy = async (dryRun: boolean) => {
-  const s3: S3 = dryRun
-    ? mockS3()
-    : new S3({
-        region: "eu-west-1"
-      });
+export const deploy = async (dryRun: boolean): Promise<void> => {
+  const s3: S3 = dryRun ? mockS3() : new S3({ region: "eu-west-1" });
 
   const conf = await getConfig();
   return deployWithConf(conf, s3);

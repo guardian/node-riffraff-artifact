@@ -9,11 +9,13 @@
     "@types/mock-aws-s3": "^2.6.1",
     "@types/node": "^13.5.0",
     "@types/yaml": "^1.2.0",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1",
     "ts-node": "^8.6.2",
-    "tslint": "^6.0.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.1.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
@@ -27,8 +29,8 @@
   "scripts": {
     "prepublishOnly": "tsc",
     "compile": "tsc",
-    "lint": "tslint --project tsconfig.json -p .",
-    "fix": "yarn lint --fix"
+    "lint": "eslint 'src/*' --ext .js,.ts",
+    "fix": "eslint 'src/*' --ext .js,.ts --fix"
   },
   "files": [
     "bin.js",

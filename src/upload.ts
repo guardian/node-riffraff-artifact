@@ -1,6 +1,6 @@
 import { Readable, PassThrough } from "stream";
 import { Action } from "./environment";
-import { Manifest, uploadManifest } from "./manifest";
+import { Manifest } from "./manifest";
 import { compressToStream, getAllFiles, fileOrDirectory } from "./bundle";
 import { createReadStream } from "fs";
 import { S3 } from "aws-sdk";
@@ -11,7 +11,7 @@ export const upload = async (
   stream: Readable | string,
   manifest: Manifest,
   action?: Action
-) => {
+): Promise<unknown> => {
   const name = relativePath.replace(/^\.\//, ""); // Strip any errant ./'s
   const path = [
     manifest.projectName,
@@ -33,18 +33,40 @@ export const upload = async (
   return result;
 };
 
-export const uploadAction = async (
+const uploadMany = async (
   s3: S3,
   manifest: Manifest,
   action: Action
-) => {
-  if (action.compress) {
-    return uploadCompressed(s3, manifest, action); // we know this isn't false ;_;
-  }
-  return uploadFiles(s3, manifest, action);
+): Promise<unknown> => {
+  const files = await getAllFiles(action.path);
+  const uploads = files.map(file => {
+    const stream = createReadStream(`${file}`);
+    return upload(s3, file, stream, manifest, action);
+  });
+  return Promise.all(uploads);
 };
 
-const uploadFiles = async (s3: S3, manifest: Manifest, action: Action) => {
+const uploadCompressed = async (
+  s3: S3,
+  manifest: Manifest,
+  action: Action
+): Promise<unknown> => {
+  if (!action.compress) {
+    throw new Error("Attempted to compress something when compress was false.");
+  }
+  const stream = new PassThrough();
+
+  return Promise.all([
+    compressToStream(action.path, action.compress, stream),
+    upload(s3, `${action.action}.${action.compress}`, stream, manifest, action)
+  ]);
+};
+
+const uploadFiles = async (
+  s3: S3,
+  manifest: Manifest,
+  action: Action
+): Promise<unknown> => {
   const isFileOrDir = await fileOrDirectory(action.path);
   if (isFileOrDir === "directory") {
     return uploadMany(s3, manifest, action);
@@ -60,23 +82,13 @@ const uploadFiles = async (s3: S3, manifest: Manifest, action: Action) => {
   throw new Error("Could not find anything to upload.");
 };
 
-const uploadMany = async (s3: S3, manifest: Manifest, action: Action) => {
-  const files = await getAllFiles(action.path);
-  const uploads = files.map(file => {
-    const stream = createReadStream(`${file}`);
-    return upload(s3, file, stream, manifest, action);
-  });
-  return Promise.all(uploads);
-};
-
-const uploadCompressed = async (s3: S3, manifest: Manifest, action: Action) => {
-  if (!action.compress) {
-    throw new Error("Attempted to compress something when compress was false.");
+export const uploadAction = async (
+  s3: S3,
+  manifest: Manifest,
+  action: Action
+): Promise<unknown> => {
+  if (action.compress) {
+    return uploadCompressed(s3, manifest, action); // we know this isn't false ;_;
   }
-  const stream = new PassThrough();
-
-  return Promise.all([
-    compressToStream(action.path, action.compress, stream),
-    upload(s3, `${action.action}.${action.compress}`, stream, manifest, action)
-  ]);
+  return uploadFiles(s3, manifest, action);
 };
