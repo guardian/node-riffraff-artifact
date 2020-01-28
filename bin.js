@@ -1,14 +1,7 @@
 #! /usr/bin/env node
 
-const argv = require("yargs").argv;
-
-if (argv.help) {
-  console.log(`
-  Welcome to node riffraff artifact.
-  Please use --import to import a legacy project.
-  Please use --dryRun to not upload to s3.
-  `);
-}
+const yargs = require("yargs");
+const argv = yargs.argv;
 
 if (argv.import) {
   const { importer } = require("./lib/import");
