@@ -2,8 +2,6 @@
 
 const argv = require("yargs").argv;
 
-console.log(argv);
-
 if (argv.help) {
   console.log(`
   Welcome to node riffraff artifact.
