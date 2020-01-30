@@ -98,7 +98,7 @@ export const uploadAction = async (
 ): Promise<unknown> => {
   console.log(`Uploading ${action.path}`);
   if (action.path === ".") {
-    console.log(chalk.redBright(warning));
+    console.log(warning);
   }
   if (action.compress) {
     return uploadCompressed(s3, manifest, action); // we know this isn't false ;_;
