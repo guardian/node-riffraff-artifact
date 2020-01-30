@@ -1,6 +1,6 @@
 {
   "name": "@guardian/node-riffraff-artifact",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Creates and upload artifacts for deployment using riffraff.",
   "main": "index.js",
   "license": "MIT",
