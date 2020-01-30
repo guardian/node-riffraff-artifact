@@ -5,6 +5,15 @@ import { compressToStream, getAllFiles, fileOrDirectory } from "./bundle";
 import { createReadStream } from "fs";
 import { S3 } from "aws-sdk";
 
+
+const warning = `\u001b[31;1m⚠️ WARNING ⚠️
+Uploading the whole project directory will upload node_modules.
+This can be very large.
+And include your development tools and AWS sdk.
+If you are creating a lambda, the AWS sdk is part of the default lambda environment.
+It is strongly reccomended to create a bundle and upload that instead.
+You may then use your bundler to exclude the aws-sdk.\u001b[0m`;
+
 export const upload = async (
   s3: S3,
   relativePath: string,
@@ -50,13 +59,13 @@ const uploadCompressed = async (
   s3: S3,
   manifest: Manifest,
   action: Action
-): Promise<unknown> => {
+): Promise<void> => {
+  console.log(`Attempting to compress ${action.path} to ${action.compress}.`);
   if (!action.compress) {
     throw new Error("Attempted to compress something when compress was false.");
   }
   const stream = new PassThrough();
-
-  return Promise.all([
+  await Promise.all([
     compressToStream(action.path, action.compress, stream),
     upload(s3, `${action.action}.${action.compress}`, stream, manifest, action)
   ]);
@@ -87,6 +96,10 @@ export const uploadAction = async (
   manifest: Manifest,
   action: Action
 ): Promise<unknown> => {
+  console.log(`Uploading ${action.path}`);
+  if (action.path === ".") {
+    console.log(chalk.redBright(warning));
+  }
   if (action.compress) {
     return uploadCompressed(s3, manifest, action); // we know this isn't false ;_;
   }

@@ -13,6 +13,10 @@ if (argv.import) {
 }
 
 const dryRun = argv.dryRun || false;
+
+if (dryRun) {
+  console.warn("Running locally.");
+}
 const riffraff = require("./lib/index");
 riffraff
   .deploy(dryRun)
