@@ -1,6 +1,7 @@
 import archiver = require("archiver");
 import { Writable } from "stream";
 import { lstat, readdir } from "fs";
+import ora from "ora";
 
 export const fileOrDirectory = (
   path: string
@@ -26,10 +27,10 @@ export const fileOrDirectory = (
         stats.isSymbolicLink()
           ? `(it's a symlink 🔗)`
           : stats.isBlockDevice()
-          ? `(it's a block device 💾)`
-          : stats.isSocket()
-          ? `(it's a socket 🔧)`
-          : `(it's unclear what you have here ❓)`
+            ? `(it's a block device 💾)`
+            : stats.isSocket()
+              ? `(it's a socket 🔧)`
+              : `(it's unclear what you have here ❓)`
       );
       resolve(false);
     });
@@ -41,9 +42,16 @@ export const compressToStream = async (
   stream: Writable
 ): Promise<void> => {
   const archive = archiver(method);
+  const spinner = ora("Compressing...");
+  spinner.start();
   archive.on("warning", err => {
     console.error("Error in attempting to compress", path, err);
   });
+
+  archive.on("entry", entry => {
+    spinner.text = `Compressing ${entry.name}`;
+  });
+
   archive.pipe(stream);
   const fileOrDir = await fileOrDirectory(path);
   if (fileOrDir === "directory") {
@@ -54,7 +62,8 @@ export const compressToStream = async (
     const name = splitPath[splitPath.length - 1];
     archive.file(path, { name });
   }
-  archive.finalize();
+  await archive.finalize();
+  spinner.succeed("Finished compressing.");
 };
 
 const ls = (path: string): Promise<string[]> =>

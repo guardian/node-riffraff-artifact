@@ -37,7 +37,6 @@ export const mockS3: () => S3 = mock;
 
 export const deploy = async (dryRun: boolean): Promise<void> => {
   const s3: S3 = dryRun ? mockS3() : new S3({ region: "eu-west-1" });
-
   const conf = await getConfig();
   return deployWithConf(conf, s3);
 };

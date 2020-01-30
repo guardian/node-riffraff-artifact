@@ -24,10 +24,12 @@ Create a file named `artifact.json` in the same directory as your `package.json`
 }
 ```
 
+It's strongly reccomended to not use `path: '.'` as this will include your node_modules directory, including all developement dependencies. Instead consider [@zeit/ncc](https://github.com/zeit/ncc), which can be used with the flags `-m -e aws-sdk` to minify and also to exclude the aws-sdk, which is included in the lambda runtime.
+
 If your project uses [node-riffraff-artefact](https://github.com/guardian/node-riffraff-artefact) (with an e), then you can run
 `npx @guardian/node-riffraff-artifact import` which will make some semi-intelligent guesses about what should be in your `artifact.json` file.
 You can then delete all the node-riffraff-artefact specific entries from your package.json.
 
 Run `node-riffraff-artifact` as a yarn script, this will upload your `riff-raff.yaml` file to S3, generate and upload a `build.json`, and each action to the artifact bucket.
 
-This can be run with a flag `--dryRun` which will use a local s3 mock, placing the files in `./tmp`.
+This can be run with a flag `--dryRun` which will use a local s3 mock. This will create a temporary directory and place the deployed files in there.
