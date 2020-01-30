@@ -4,7 +4,6 @@ import { Manifest } from "./manifest";
 import { compressToStream, getAllFiles, fileOrDirectory } from "./bundle";
 import { createReadStream } from "fs";
 import { S3 } from "aws-sdk";
-import chalk from "chalk";
 
 
 const warning = `\u001b[31;1m⚠️ WARNING ⚠️
