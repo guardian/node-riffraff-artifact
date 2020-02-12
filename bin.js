@@ -4,11 +4,11 @@ const yargs = require("yargs");
 const argv = yargs.argv;
 
 if (argv.import) {
+  console.log("Attempting to import existing project.");
   const { importer } = require("./lib/import");
-
-  importer().then(actions => {
-    console.log(JSON.stringify(actions, null, 2));
-  });
+  const artifacts = importer();
+  console.log("Save the following to artifact.json:");
+  console.warn(JSON.stringify(artifacts, null, 2));
   process.exit(0);
 }
 
