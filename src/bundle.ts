@@ -27,10 +27,10 @@ export const fileOrDirectory = (
         stats.isSymbolicLink()
           ? `(it's a symlink 🔗)`
           : stats.isBlockDevice()
-            ? `(it's a block device 💾)`
-            : stats.isSocket()
-              ? `(it's a socket 🔧)`
-              : `(it's unclear what you have here ❓)`
+          ? `(it's a block device 💾)`
+          : stats.isSocket()
+          ? `(it's a socket 🔧)`
+          : `(it's unclear what you have here ❓)`
       );
       resolve(false);
     });
