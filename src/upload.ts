@@ -5,6 +5,7 @@ import { compressToStream, getAllFiles, fileOrDirectory } from "./bundle";
 import { createReadStream } from "fs";
 import { S3 } from "aws-sdk";
 
+
 const warning = `\u001b[31;1m⚠️ WARNING ⚠️
 Uploading the whole project directory will upload node_modules.
 This can be very large.
@@ -13,8 +14,6 @@ If you are creating a lambda, the AWS sdk is part of the default lambda environm
 It is strongly reccomended to create a bundle and upload that instead.
 You may then use your bundler to exclude the aws-sdk.\u001b[0m`;
 
-const dotSlashExp = /^\.\//;
-
 export const upload = async (
   s3: S3,
   relativePath: string,
@@ -22,17 +21,12 @@ export const upload = async (
   manifest: Manifest,
   action?: Action
 ): Promise<unknown> => {
-  const directoryName = (action?.path ?? "").replace(dotSlashExp, "");
-  const fileName = relativePath
-    .replace(dotSlashExp, "") // remove any dot-slash prefix
-    .replace(directoryName, "") // normalise the key such that the packaging directory doesn't bleed on s3
-    .replace(/^\//, ""); // remove any slash prefix
-
+  const name = relativePath.replace(/^\.\//, ""); // Strip any errant ./'s
   const path = [
     manifest.projectName,
     manifest.buildNumber,
     action && action.action,
-    fileName
+    name
   ]
     .filter(_ => _ != null)
     .join("/");
