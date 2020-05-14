@@ -50,7 +50,8 @@ const uploadMany = async (
   const files = await getAllFiles(action.path);
   const uploads = files.map(file => {
     const stream = createReadStream(`${file}`);
-    return upload(s3, file, stream, manifest, action);
+    const s3Path = file.slice((action.path + '/').length);
+    return upload(s3, s3Path, stream, manifest, action);
   });
   return Promise.all(uploads);
 };
