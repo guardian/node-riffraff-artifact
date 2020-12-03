@@ -42,5 +42,5 @@ You can then delete all the node-riffraff-artefact specific entries from your pa
 
 ### Warning
 
-It's strongly reccomended to not use `path: '.'` as this will include your node_modules directory, including all developement dependencies. Instead consider [@zeit/ncc](https://github.com/zeit/ncc), which can be used with the flags `-m -e aws-sdk` to minify and also to exclude the aws-sdk, which is included in the lambda runtime.
+It's strongly reccomended to not use `path: '.'` as this will include your node_modules directory, including all development dependencies. Instead consider [@zeit/ncc](https://github.com/zeit/ncc), which can be used with the flags `-m -e aws-sdk` to minify and also to exclude the aws-sdk, which is included in the lambda runtime.
 You may have to change your build process if you were previously uploading `.`.
