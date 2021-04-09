@@ -1,0 +1,12 @@
+
+{
+  "projectName": "test-fixture",
+  "vcsURL": "(github url)",
+  "actions": [
+    {
+      "action": "test",
+      "path": "dist",
+      "compress": "tar"
+    }
+  ]
+}
