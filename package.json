@@ -26,7 +26,7 @@
     "ora": "^4.0.3",
     "temp": "^0.9.1",
     "yaml": "^1.7.2",
-    "yargs": "^15.1.0"
+    "yargs": "^15.4.1"
   },
   "scripts": {
     "prepublishOnly": "tsc",
