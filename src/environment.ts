@@ -6,20 +6,32 @@ export interface Action {
   compress: false | "zip" | "tar";
 }
 
-type environment = "circle-ci" | "travis-ci" | "jenkins" | "teamcity" | "dev";
+type environment =
+  | "circle-ci"
+  | "travis-ci"
+  | "jenkins"
+  | "teamcity"
+  | "github-actions"
+  | "dev";
 
 const determineEnvironment = (): environment => {
   if (process.env.CIRCLECI && process.env.CI) {
     return "circle-ci";
-  } else if (process.env.TRAVIS && process.env.CI) {
-    return "travis-ci";
-  } else if (process.env.JENKINS_URL) {
-    return "jenkins";
-  } else if (process.env.TEAMCITY_VERSION) {
-    return "teamcity";
-  } else {
-    return "dev";
   }
+  if (process.env.TRAVIS && process.env.CI) {
+    return "travis-ci";
+  }
+  if (process.env.JENKINS_URL) {
+    return "jenkins";
+  }
+  if (process.env.TEAMCITY_VERSION) {
+    return "teamcity";
+  }
+  if (process.env.GITHUB_ACTIONS) {
+    return "github-actions";
+  }
+
+  return "dev";
 };
 
 export const getBranchName = (env: environment): string | undefined => {
@@ -40,6 +52,12 @@ export const getBranchName = (env: environment): string | undefined => {
         .split("/")
         .slice(-1)[0];
 
+    case "github-actions":
+      // `GITHUB_HEAD_REF` is only set for pull request events and represents the branch name (e.g. `feature-branch-1`).
+      // `GITHUB_REF` is the branch or tag ref that triggered the workflow (e.g. `refs/heads/feature-branch-1` or `refs/pull/259/merge`).
+      // See https://docs.github.com/en/actions/learn-github-actions/environment-variables
+      return process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF;
+
     default:
       return undefined;
   }
@@ -59,6 +77,9 @@ export const getVcsRevision = (env: environment): string | undefined => {
     case "teamcity":
       return process.env.BUILD_VCS_NUMBER;
 
+    case "github-actions":
+      return process.env.GITHUB_SHA;
+
     default:
       return undefined;
   }
@@ -77,6 +98,10 @@ export const getBuildId = (env: environment): string | undefined => {
 
     case "teamcity":
       return process.env.BUILD_NUMBER;
+
+    case "github-actions":
+      return process.env.GITHUB_RUN_NUMBER;
+
     default:
       return undefined;
   }
