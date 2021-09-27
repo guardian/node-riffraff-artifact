@@ -29,6 +29,42 @@ Run `node-riffraff-artifact` as a yarn script, this will upload your `riff-raff.
 
 This can be run with a flag `--dryRun` which will use a local s3 mock. This will create a temporary directory and place the deployed files in there.
 
+### Within GitHub Actions
+`node-riffraff-artifact` will upload files to S3. When run in TeamCity, we gain credentials via TeamCity's `InstanceProfile` policy.
+
+To give GitHub Actions permissions to upload to S3 use the [`@guardian/actions-assume-aws-role` Action](https://github.com/guardian/actions-assume-aws-role).
+Ensure you use the Action before `node-riffraff-artifact`.
+A secret (`GU_RIFF_RAFF_ROLE_ARN`) has been added Guardian GitHub organisation that can be used for the value of `awsRoleToAssume`.
+
+For example:
+```yaml
+name: CI
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        node-version: [14.17.4]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: guardian/actions-assume-aws-role@v1
+        with:
+          awsRoleToAssume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm run node-riffraff-artifact
+```
+
 ### Migrating from node-riffraff-artefact
 
 If your project uses [node-riffraff-artefact](https://github.com/guardian/node-riffraff-artefact) (with an e), then you can run
