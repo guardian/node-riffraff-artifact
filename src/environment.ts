@@ -52,11 +52,13 @@ export const getBranchName = (env: environment): string | undefined => {
         .split("/")
         .slice(-1)[0];
 
-    case "github-actions":
+    case "github-actions": {
       // `GITHUB_HEAD_REF` is only set for pull request events and represents the branch name (e.g. `feature-branch-1`).
       // `GITHUB_REF` is the branch or tag ref that triggered the workflow (e.g. `refs/heads/feature-branch-1` or `refs/pull/259/merge`).
       // See https://docs.github.com/en/actions/learn-github-actions/environment-variables
-      return process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF;
+      const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF;
+      return branchName ? branchName.replace("refs/heads/", "") : undefined;
+    }
 
     default:
       return undefined;
