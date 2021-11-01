@@ -4,30 +4,29 @@ This module takes artifacts and uploads them to riff-raff for deployment.
 
 ## How to use
 
-Install `@guardian/node-riffraff-artifact`.
-`yarn add --dev @guardian/node-riffraff-artifact`
+1. Install `@guardian/node-riffraff-artifact`: 
+    
+    `npm i -D @guardian/node-riffraff-artifact` OR `yarn add --dev @guardian/node-riffraff-artifact`
 
-This can also be used from `npx` or `yarn dlx` without installation.
+2. Create a file named `artifact.json` in the same directory as your `package.json`.
 
-Create a file named `artifact.json` in the same directory as your `package.json`.
-
-```json
-{
-  "projectName": "(name of your project)",
-  "vcsURL": "(github url)",
-  "actions": [
+    ```json
     {
-      "action": "(the name of the deployment in riffraff)",
-      "path": "(each individual deployment from your riff-raff.yaml file)",
-      "compress": "('zip' or 'tar' or false)"
+      "projectName": "(name of your project)",
+      "vcsURL": "(github url)",
+      "actions": [
+        {
+          "action": "(the name of the deployment in riffraff)",
+          "path": "(each individual deployment from your riff-raff.yaml file)",
+          "compress": "('zip' or 'tar' or false)"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
-Run `node-riffraff-artifact` as a yarn script, this will upload your `riff-raff.yaml` file to S3, generate and upload a `build.json`, and each action to the artifact bucket.
+3. Run `node-riffraff-artifact` as a npm (or yarn) script. this will upload your `riff-raff.yaml` file to S3, generate and upload a `build.json`, and each action to the artifact bucket.
 
-This can be run with a flag `--dryRun` which will use a local s3 mock. This will create a temporary directory and place the deployed files in there.
+    This can be run with a flag `--dryRun` which will use a local s3 mock. This will create a temporary directory and place the deployed files in there.
 
 ### Within GitHub Actions
 `node-riffraff-artifact` will upload files to S3. When run in TeamCity, we gain credentials via TeamCity's `InstanceProfile` policy.
