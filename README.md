@@ -33,7 +33,7 @@ This module takes artifacts and uploads them to riff-raff for deployment.
 
 To give GitHub Actions permissions to upload to S3 use the [`aws-actions/configure-aws-credentials` Action](https://github.com/aws-actions/configure-aws-credentials).
 Ensure you use the Action before `node-riffraff-artifact`.
-A secret (`GU_RIFF_RAFF_ROLE_ARN`) has been added Guardian GitHub organisation that can be used for the value of `awsRoleToAssume`.
+A secret (`GU_RIFF_RAFF_ROLE_ARN`) has been added Guardian GitHub organisation that can be used for the value of `role-to-assume`.
 
 For example:
 ```yaml
