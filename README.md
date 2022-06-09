@@ -2,7 +2,7 @@
 
 **This project is DEPRECATED and you should use
 https://github.com/guardian/actions-riff-raff/ instead. Note, if you are still
-using Teamcity you should stick with this project for now.**
+using Teamcity you should stick with this project, but we recommend migrating to Github Actions.**
 
 This module takes artifacts and uploads them to riff-raff for deployment.
 
