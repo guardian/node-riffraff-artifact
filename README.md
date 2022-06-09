@@ -1,11 +1,15 @@
 # node-riffraff-artifact
 
+**This project is DEPRECATED and you should use
+https://github.com/guardian/actions-riff-raff/ instead. Note, if you are still
+using Teamcity you should stick with this project for now.**
+
 This module takes artifacts and uploads them to riff-raff for deployment.
 
 ## How to use
 
-1. Install `@guardian/node-riffraff-artifact`: 
-    
+1. Install `@guardian/node-riffraff-artifact`:
+
     `npm i -D @guardian/node-riffraff-artifact` OR `yarn add --dev @guardian/node-riffraff-artifact`
 
 2. Create a file named `artifact.json` in the same directory as your `package.json`.
